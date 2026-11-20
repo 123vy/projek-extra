@@ -1,0 +1,522 @@
+/* Mengatur halaman utama agar kontennya tepat di tengah layar */
+p{
+    color: #ffffff;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center; /* Tengah horizontal */
+    align-items: center;    /* Tengah vertikal */
+    min-height: 100vh;      /* Tinggi penuh layar */
+    font-family: Arial, sans-serif;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: -20px;
+    left: -20px;
+    right: -20px;
+    bottom: -20px;
+    background-image: url('https://awsimages.detik.net.id/community/media/visual/2023/08/28/rekomendasi-ramen-halal-di-medan-instagram-jigo-ramen_169.jpeg?w=1200'); /* Keep your full image URL here */
+    background-size: cover;
+    background-position: center;
+    filter: blur(8px);
+    z-index: -1;
+}
+
+
+/* Mengatur tampilan kotak putih di tengah */
+.container {
+    width: 90%;
+    max-width: 1100px;
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    background-color: #540b0e; /* Keep your dark red base color */
+    /* Subtle diagonal Japanese-style lattice pattern */
+    background-image: repeating-linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.03) 0px,
+        rgba(255, 255, 255, 0.03) 2px,
+        transparent 2px,
+        transparent 12px
+    ),
+    repeating-linear-gradient(
+        -45deg,
+        rgba(255, 255, 255, 0.03) 0px,
+        rgba(255, 255, 255, 0.03) 2px,
+        transparent 2px,
+        transparent 12px
+    );
+}
+
+.judul{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-align: center;
+}
+
+.subjudul{
+    color:white;
+    font-size: 20px;
+}
+
+/* Menaruh font aesthetic bergaya tulisan bersambung (Cursive) */
+.font-unik {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-weight: bold;
+    color: #c08401; /* Mengubah warna teks menjadi oranye */
+}
+
+/* Menaruh font bergaya modern dan futuristik (Monospace) */
+.font-modern {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #c08401; /* Memberi latar belakang abu-abu tipis */
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: aliceblue;
+}
+
+.font-utama {
+    font-family:serif;
+    color: #ffffff;
+    margin-bottom: 24px;
+}
+.font-menu{
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    color: #ffb618;
+    font-size: 80px;
+    line-height: 0;
+}
+
+.font-makan {
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    color: #ffb618;
+}
+
+.header {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.ramen {
+    position: absolute;
+    top: -10px;
+    right: 0;
+}
+
+.kliksection {
+    margin-top: 20px;
+}
+
+/* Mengatur tampilan tombol */
+button {
+    background-color: #000000;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+.row-1 {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 20px 70px; /* Memberikan jarak pemisah antara Kolom A dan Kolom B */
+}
+
+
+.row-kolom {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.btn-div-1 {
+    margin-top: 20px;
+    width: 100%;
+}
+
+#tombolKlik {
+    width: 75%;
+}
+
+.menu-minum {
+    font-weight: bold;
+    margin: 5px 0;
+    font-size: 18px;
+    color: #ffffff;
+    text-align: left;
+    line-height: 0.8;
+}
+
+
+
+.menu-item{
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dotted #ffffff;
+    padding-bottom: 4px;
+    margin-bottom: 4px;
+    font-weight: bold;
+    margin: 5px 0;
+    font-size: 18px;
+    color: #ffffff;
+    text-align: left;
+}
+
+.minum {
+    color: #e0d5d5;
+    font-size: 0.80rem;
+    font-family:'Courier New', Courier, monospace;
+    line-height: 1;
+    margin-top: 6px;
+    text-align: left;
+}
+
+.name-and-check{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.food-checkbox{
+    display: none;
+}
+
+.custom-checkmark{
+    width:22px;
+    height: 22px;
+    border: 2px solid #f5b800; /* Gold border */
+    border-radius: 4px;
+    display: inline-block;
+    position: relative;
+    margin-top: 2px;
+    flex-shrink: 0;
+    transition: background-color 0.2s;
+}
+
+.food-checkbox:checked + .custom-checkmark {
+  background-color: #f5b800;
+}
+
+.food-checkbox:checked + .custom-checkmark::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 11px;
+  border: solid #4a1212; /* Dark maroon tick */
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+}
+
+.order-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #2b0909;
+  border-top: 2px solid #f5b800;
+  color: white;
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+#order-btn {
+  background: #f5b800;
+  color: #2b0909;
+  border: none;
+  padding: 10px 20px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.modal-overlay {
+  display: none; /* Hidden by default */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.75);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-box {
+  background: #2b0909;
+  border: 2px solid #f5b800;
+  border-radius: 8px;
+  padding: 25px;
+  width: 90%;
+  max-width: 420px;
+  color: #ffffff;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+}
+
+.modal-title {
+  color: #f5b800;
+  margin-top: 0;
+  text-align: center;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
+  padding-bottom: 10px;
+}
+
+.modal-section {
+  margin-bottom: 16px;
+}
+
+.modal-section h4 {
+  margin: 0 0 8px 0;
+  color: #f5b800;
+}
+
+#modal-order-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 10px 0;
+  max-height: 140px;
+  overflow-y: auto;
+  font-size: 0.9rem;
+}
+
+#modal-order-list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-total {
+  text-align: right;
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #f5b800;
+}
+
+.modal-section label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+.modal-section input,
+.modal-section select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #f5b800;
+  background: #421111;
+  color: #ffffff;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.payment-note {
+  font-size: 0.85rem;
+  color: #e0d5d5;
+  background: rgba(245, 184, 0, 0.12);
+  border-left: 3px solid #f5b800;
+  padding: 8px 10px;
+  margin-top: 10px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+#cancel-modal-btn {
+  background: transparent;
+  color: #ffffff;
+  border: 1px solid #ffffff;
+  padding: 10px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#confirm-order-btn {
+  background: #f5b800;
+  color: #2b0909;
+  border: none;
+  padding: 10px 20px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.role-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.role-btn {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 0;
+  transition: transform 0.15s, opacity 0.2s;
+}
+
+.role-btn:hover {
+  transform: scale(1.02);
+}
+
+.role-btn.pelanggan {
+  background-color: #f5b800;
+  color: #2b0909;
+}
+
+.role-btn.pegawai {
+  background-color: transparent;
+  color: #f5b800;
+  border: 2px solid #f5b800;
+}
+
+/* Navbar Khusus Pegawai di Pojok Kiri Atas */
+.staff-navbar {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.25);
+}
+
+.nav-btn {
+  background-color: #2b0909;
+  color: #ffffff;
+  border: 1px solid #f5b800;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 5px;
+  margin-top: 0;
+  cursor: pointer;
+}
+
+.nav-btn.active {
+  background-color: #f5b800;
+  color: #2b0909;
+}
+
+.nav-btn.logout {
+  margin-left: auto; /* Mendorong tombol Ganti Peran ke kanan */
+  border-color: #ff6b6b;
+  color: #ff6b6b;
+  font-size: 12px;
+}
+
+/* Kartu Pesanan Masuk untuk Pegawai */
+.order-card {
+  background: #2b0909;
+  border: 1px solid #f5b800;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 12px;
+}
+
+.order-card-action {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.2);
+}
+
+.btn-edit-order{
+    background-color: #f5b800;
+    color: #2b0909;
+    font-weight: bold;
+    font-size: 13px;
+    padding: 6px 14px;
+    margin-top: 0;
+    border-radius: 4px;
+}
+
+.btn-delete-order{
+    background-color: #b81d1d;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 13px;
+  padding: 6px 14px;
+  margin-top: 0;
+  border-radius: 4px;
+}
+
+.btn-delete-order:hover {
+  background-color: #e02424;
+}
+
+/* Daftar Checklist Menu di dalam Modal Edit */
+.edit-menu-checklist {
+  max-height: 150px;
+  overflow-y: auto;
+  background: #421111;
+  border: 1px solid #f5b800;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.edit-menu-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.edit-menu-item input[type="checkbox"] {
+  width: auto;
+  margin-right: 8px;
+  accent-color: #f5b800;
+}
+
+#cancel-edit-btn {
+  background: transparent;
+  color: #ffffff;
+  border: 1px solid #ffffff;
+  padding: 10px 16px;
+  border-radius: 5px;
+  margin-top: 0;
+}
+
+#save-edit-btn {
+  background: #f5b800;
+  color: #2b0909;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 5px;
+  margin-top: 0;
+}

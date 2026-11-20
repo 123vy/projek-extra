@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website 3 File</title>
+    <!-- MENGHUBUNGKAN KE FILE CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="role-modal" class="modal-overlay" style="display: flex; backdrop-filter: blur(8px);">
+        <div class="modal-box" style="text-align: center;">
+            <h2 class="modal-title">SELAMAT DATANG</h2>
+            <p style="margin-bottom: 20px; font-size: 0.95rem;">AKSES :</p>
+
+            <div class="role-buttons">
+                <button type="button" id="btn-pelanggan" class="role-btn pelanggan">
+                    Pelanggan
+                </button>
+                <button type="button" id="btn-pegawai" class="role-btn pegawai">
+                    Pegawai
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- TOMBOL KHUSUS PEGAWAI (Pojok Kiri Atas - Sembunyi secara default) -->
+        <div id="staff-nav" class="staff-navbar">
+            <button type="button" id="nav-menu-utama" class="nav-btn active">Menu Utama</button>
+            <button type="button" id="nav-pesanan" class="nav-btn">Pesanan (<span id="order-badge">0</span>)</button>
+            <button type="button" id="nav-ganti-peran" class="nav-btn logout">Ganti Peran</button>
+        </div>
+
+        <div class="container">
+            <div class="header">
+                <div class="judul">
+                    <span class="font-utama">RAMEN</span>
+                    <span class="font-menu">MENU</span>
+                    <p>
+                    <div class="subjudul">
+                        <span class="font-unik">Fauget</span> Japanese
+                        <span class="font-modern">Restaurant</span>
+                    </div>
+                    </p>
+                </div>
+                <div class="ramen">
+                    <img src="assets\ramen-removebg-preview.png" alt="img 1" width="200" height="200">
+                </div>
+            </div>
+            </h1>
+
+            <div class="row-kolom">
+            <div class="row-1">
+                <div class="kolom">
+                    <h2><span class="font-makan">MINUMAN</span></h2>
+                    <div id="list-minuman"></div>
+                </div>
+
+                <div class="kolom2">
+                    <h2><span class="font-makan">MAKANAN</span></h2>
+                    <div id="list-makanan"></div>
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <div id="pesanan-view" style="display: none; text-align: left; color: white; margin-top: 20px;">
+            <h2 class="font-makan" style="text-align: center;">DAFTAR PESANAN MASUK</h2>
+            <div id="daftar-pesanan-container">
+                <p style="text-align: center; color: #e0d5d5;">Belum ada pesanan masuk.</p>
+            </div>
+        </div>
+
+        <br><br><br>
+
+    </div>
+    <div class="order-bar">
+        <span>Selected Items: <strong id="item-count">0</strong></span>
+        <span>Total: <strong id="total-price">0K</strong></span>
+        <button id="order-btn">Order Now</button>
+    </div>
+
+    <div id="checkout-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h2 class="modal-title">ORDER</h2>
+
+            <div class="modal-section">
+                <h4>Summary :</h4>
+                <ul id="modal-order-list"></ul>
+                <div class="modal-total">Total : <span id="modal-total-price">0K</span></div>
+            </div>
+
+            <!--Table-->
+            <div class="modal-section">
+                <label for="table-number">Meja :</label>
+                <input type="number" id="table-number" placeholder="e.g. 5" min="1" required>
+            </div>
+
+            <div class="modal-section">
+                <label for="edit-menu-dropdown">Tambah Item (Master Menu) :</label>
+                <div style="display: flex; gap: 8px;">
+                    <select id="edit-menu-dropdown">
+                        <!-- Opsi otomatis terisi dari MASTER_MENU -->
+                    </select>
+                    <button type="button" id="btn-tambah-item-edit" style="margin-top: 0; background: #f5b800; color: #2b0909; font-weight: bold;">
+                        + Tambah
+                    </button>
+                </div>
+
+                <!-- Daftar item yang sedang ada di pesanan ini -->
+                <ul id="edit-selected-items-list" style="list-style: none; padding: 0; margin-top: 10px; max-height: 130px; overflow-y: auto;">
+                </ul>
+            </div>
+
+            <!--Payment-->
+            <div class="modal-section">
+                <label for="payment-method">Pembayaran :</label>
+                <select id="payment-method">
+                    <option value="Cashier">Kasir (Cash / Card)</option>
+                    <option value="QRIS">OVO / DANA</option>
+                </select>
+                <p id="payment-instruction" class="payment-note">
+                    Pergi ke kasir dengan kartu nomor meja Anda untuk melakukan pembayaran.
+                </p>
+            </div>
+
+            <!--Button-->
+            <div class="modal-buttons">
+                <button type="button" id="cancel-modal-btn">Cancel</button>
+                <button type="button" id="confirm-order-btn">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="edit-order-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h2 class="modal-title">EDIT</h2>
+            <input type="hidden" id="edit-order-index">
+
+            <div class="modal-section">
+                <label for="edit-table-number">Nomor Meja :</label>
+                <input type="number" id="edit-table-number" min="1" required>
+            </div>
+            <div class="modal-section">
+                <label for="edit-payment-method">Pembayaran :</label>
+                <select id="edit-payment-method">
+                    <option value="Cashier">Kasir (Cash / Card)</option>
+                    <option value="QRIS">OVO / DANA</option>
+                </select>
+            </div>
+
+            <div class="modal-total" style="margin-bottom: 15px;">
+                Total Baru : <span id="edit-total-price">0K</span>
+            </div>
+
+            <div class="modal-buttons">
+                <button type="button" id="cancel-edit-btn">Batal</button>
+                <button type="button" id="save-edit-btn">Simpan Perubahan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MENGHUBUNGKAN KE FILE JAVASCRIPT -->
+    <script src="script.js"></script>
+
+</body>
+
+</html>
