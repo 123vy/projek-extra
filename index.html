@@ -88,8 +88,7 @@
             <h2 class="modal-title">ORDER</h2>
 
             <div class="modal-section">
-                <h4>Summary :</h4>
-                <ul id="modal-order-list"></ul>
+                
                 <div class="modal-total">Total : <span id="modal-total-price">0K</span></div>
             </div>
 
@@ -100,15 +99,12 @@
             </div>
 
             <div class="modal-section">
-                <label for="edit-menu-dropdown">Tambah Item (Master Menu) :</label>
-                <div style="display: flex; gap: 8px;">
-                    <select id="edit-menu-dropdown">
-                        <!-- Opsi otomatis terisi dari MASTER_MENU -->
-                    </select>
                     <button type="button" id="btn-tambah-item-edit" style="margin-top: 0; background: #f5b800; color: #2b0909; font-weight: bold;">
-                        + Tambah
+                        +
                     </button>
-                </div>
+                
+
+                <div id="menu-picker-popup" style="display: none; background: #421111; border: 1px solid #f5b800; border-radius: 6px; margin-top: 8px; max-height: 180px; overflow-y: auto; padding: 6px;"></div>
 
                 <!-- Daftar item yang sedang ada di pesanan ini -->
                 <ul id="edit-selected-items-list" style="list-style: none; padding: 0; margin-top: 10px; max-height: 130px; overflow-y: auto;">
@@ -144,6 +140,19 @@
                 <label for="edit-table-number">Nomor Meja :</label>
                 <input type="number" id="edit-table-number" min="1" required>
             </div>
+
+            <div class="modal-section">
+                <label>Daftar Menu Pesanan :</label>
+                <button type="button" id="staff-add-item-btn" style="width: 100%; margin-top: 0; background: #f5b800; color: #2b0909; font-weight: bold;">
+                    +
+                </button>
+
+                <!-- Popup pilihan menu khusus di modal EDIT -->
+                <div id="staff-menu-picker-popup" style="display: none; background: #421111; border: 1px solid #f5b800; border-radius: 6px; margin-top: 8px; max-height: 180px; overflow-y: auto; padding: 6px;"></div>
+                <ul id="staff-edit-items-list" style="list-style: none; padding: 0; margin-top: 10px; max-height: 150px; overflow-y: auto; background: #421111; border: 1px solid #f5b800; border-radius: 5px;">
+                </ul>
+            </div>
+
             <div class="modal-section">
                 <label for="edit-payment-method">Pembayaran :</label>
                 <select id="edit-payment-method">

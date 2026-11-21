@@ -188,6 +188,10 @@ button {
     text-align: left;
 }
 
+.checkout-modal{
+  overflow-y: auto;
+}
+
 .name-and-check{
     display: flex;
     align-items: center;
@@ -227,6 +231,7 @@ button {
 }
 
 .order-bar {
+  overflow-y: auto;
   position: fixed;
   bottom: 0;
   left: 0;

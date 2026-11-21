@@ -47,7 +47,6 @@ function renderMenuUtama() {
   });
 }
 
-// Jalankan render menu saat halaman dimuat
 renderMenuUtama();
 
 const checkboxes = document.querySelectorAll('.food-checkbox');
@@ -56,11 +55,9 @@ const totalPriceEl = document.getElementById('total-price');
 const orderBtn = document.getElementById('order-btn');
 
 const modal = document.getElementById('checkout-modal');
-const modalOrderList = document.getElementById('modal-order-list');
 const modalTotalPrice = document.getElementById('modal-total-price');
 const tableInput = document.getElementById('table-number');
 const paymentSelect = document.getElementById('payment-method');
-const paymentInstruction = document.getElementById('payment-instruction');
 const cancelModalBtn = document.getElementById('cancel-modal-btn');
 const confirmOrderBtn = document.getElementById('confirm-order-btn');
 
@@ -83,23 +80,146 @@ const orderBadge = document.getElementById('order-badge');
 const editOrderModal = document.getElementById('edit-order-modal');
 const editOrderIndexInput = document.getElementById('edit-order-index');
 const editTableInput = document.getElementById('edit-table-number');
-const editMenuList = document.getElementById('edit-menu-list');
-const editMenuDropdown = document.getElementById('edit-menu-dropdown');
 const editPaymentSelect = document.getElementById('edit-payment-method');
 const editTotalPriceEl = document.getElementById('edit-total-price');
 const cancelEditBtn = document.getElementById('cancel-edit-btn');
 const saveEditBtn = document.getElementById('save-edit-btn');
 
-let daftarPesanan = []; // Menyimpan riwayat pesanan sementara
-let itemEditSementara = []; // Menampung array nama item yang sedang diedit
+const btnTambahItemEdit = document.getElementById('btn-tambah-item-edit');
+const menuPickerPopup = document.getElementById('menu-picker-popup');
+const editSelectedItemsList = document.getElementById('edit-selected-items-list');
 
-function fillDropdown() {
-  editMenuDropdown.innerHTML = MASTER_MENU.map(item => 
-    `<option value="${item.nama}">${item.nama} - ${item.harga}K (${item.kategori.toUpperCase()})</option>`
-  ).join('');
+const staffAddItemBtn = document.getElementById('staff-add-item-btn');
+const staffMenuPickerPopup = document.getElementById('staff-menu-picker-popup');
+const staffEditItemsList = document.getElementById('staff-edit-items-list');
+
+let currentEditItems = [];
+let currentModalItems = [];
+let daftarPesanan = [];
+
+// --- LOGIKA TOMBOL "+" & POPUP KATEGORI MENU (CHECKOUT) ---
+function renderModalItems() {
+  if (editSelectedItemsList) editSelectedItemsList.innerHTML = '';
+  let total = 0;
+
+  currentModalItems.forEach((item, index) => {
+    total += item.harga;
+
+    if (editSelectedItemsList) {
+      const editLi = document.createElement('li');
+      editLi.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 4px 6px; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.85rem;';
+      editLi.innerHTML = `
+        <span>${item.nama} (${item.harga}K)</span>
+        <button type="button" onclick="hapusItemModal(${index})" style="background: #b81d1d; color: white; padding: 2px 8px; font-size: 12px; margin-top: 0;">x</button>
+      `;
+      editSelectedItemsList.appendChild(editLi);
+    }
+  });
+
+  modalTotalPrice.textContent = total + 'K';
 }
-fillDropdown();
 
+window.hapusItemModal = function(index) {
+  currentModalItems.splice(index, 1);
+  renderModalItems();
+};
+
+window.pilihDariPopup = function(id) {
+  const item = MASTER_MENU.find(m => m.id === id);
+  if (item) {
+    currentModalItems.push({ nama: item.nama, harga: item.harga });
+    renderModalItems();
+  }
+};
+
+function renderMenuPickerPopup() {
+  if (!menuPickerPopup) return;
+  const minuman = MASTER_MENU.filter(m => m.kategori === 'minuman');
+  const makanan = MASTER_MENU.filter(m => m.kategori === 'makanan');
+
+  const buatTombolItem = (item) => `
+    <div onclick="pilihDariPopup('${item.id}')" 
+         style="display: flex; justify-content: space-between; padding: 6px 8px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.9rem;"
+         onmouseover="this.style.background='#540b0e'" 
+         onmouseout="this.style.background='transparent'">
+      <span>+ ${item.nama}</span>
+      <span style="color: #f5b800; font-weight: bold;">${item.harga}K</span>
+    </div>
+  `;
+
+  menuPickerPopup.innerHTML = `
+    <div style="color: #f5b800; font-weight: bold; font-size: 0.85rem; padding: 4px 6px; background: #2b0909;">
+      Kategori: Minuman
+    </div>
+    ${minuman.map(buatTombolItem).join('')}
+
+    <div style="color: #f5b800; font-weight: bold; font-size: 0.85rem; padding: 4px 6px; margin-top: 6px; background: #2b0909;">
+      Kategori: Makanan
+    </div>
+    ${makanan.map(buatTombolItem).join('')}
+  `;
+}
+
+if (btnTambahItemEdit && menuPickerPopup) {
+  btnTambahItemEdit.addEventListener('click', () => {
+    if (menuPickerPopup.style.display === 'none' || menuPickerPopup.style.display === '') {
+      renderMenuPickerPopup();
+      menuPickerPopup.style.display = 'block';
+    } else {
+      menuPickerPopup.style.display = 'none';
+    }
+    });
+}
+
+// --- LOGIKA POPUP KATEGORI MENU (EDIT PEGAWAI) ---
+window.pilihDariPopupEdit = function(id) {
+  const menuObj = MASTER_MENU.find(m => m.id === id);
+  if (menuObj) {
+    currentEditItems.push({ nama: menuObj.nama, harga: menuObj.harga });
+    renderStaffEditItems();
+  }
+};
+
+function renderStaffMenuPickerPopup() {
+  if (!staffMenuPickerPopup) return;
+  const minuman = MASTER_MENU.filter(m => m.kategori === 'minuman');
+  const makanan = MASTER_MENU.filter(m => m.kategori === 'makanan');
+
+  const buatTombolItem = (item) => `
+    <div onclick="pilihDariPopupEdit('${item.id}')" 
+         style="display: flex; justify-content: space-between; padding: 6px 8px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.9rem;"
+         onmouseover="this.style.background='#540b0e'" 
+         onmouseout="this.style.background='transparent'">
+      <span>+ ${item.nama}</span>
+      <span style="color: #f5b800; font-weight: bold;">${item.harga}K</span>
+    </div>
+  `;
+
+  staffMenuPickerPopup.innerHTML = `
+    <div style="color: #f5b800; font-weight: bold; font-size: 0.85rem; padding: 4px 6px; background: #2b0909;">
+      Kategori: Minuman
+    </div>
+    ${minuman.map(buatTombolItem).join('')}
+
+    <div style="color: #f5b800; font-weight: bold; font-size: 0.85rem; padding: 4px 6px; margin-top: 6px; background: #2b0909;">
+      Kategori: Makanan
+    </div>
+    ${makanan.map(buatTombolItem).join('')}
+  `;
+}
+
+if (staffAddItemBtn && staffMenuPickerPopup) {
+  staffAddItemBtn.addEventListener('click', () => {
+    if (staffMenuPickerPopup.style.display === 'none' || staffMenuPickerPopup.style.display === '') {
+      renderStaffMenuPickerPopup();
+      staffMenuPickerPopup.style.display = 'block';
+    } else {
+      staffMenuPickerPopup.style.display = 'none';
+    }
+  });
+}
+
+// --- LOGIKA PESANAN & PEGAWAI ---
 function renderPesanan() {
   orderBadge.textContent = daftarPesanan.length;
 
@@ -107,14 +227,20 @@ function renderPesanan() {
     daftarPesananContainer.innerHTML = '<p style="text-align: center; color: #e0d5d5;">Belum ada pesanan masuk.</p>';
     return;
   }
-daftarPesananContainer.innerHTML = daftarPesanan.map((order, index) => `
+
+  daftarPesananContainer.innerHTML = daftarPesanan.map((order, index) => `
     <div class="order-card">
       <div style="display: flex; justify-content: space-between; font-weight: bold; color: #f5b800; margin-bottom: 6px;">
         <span>Meja No. ${order.meja}</span>
         <span>${order.total} (${order.metode})</span>
       </div>
-      <div style="font-size: 0.9rem;">Item: ${order.items.join(', ')}</div>
-      <div class="order-card-actions">
+      <div style="font-size: 0.9rem;">
+        <strong>Item:</strong>
+        <ol style="margin: 4px 0 0 0; padding-left: 20px; line-height: 1.5;">
+          ${order.items.map(item => `<li>${item}</li>`).join('')}
+        </ol>
+      </div>
+      <div class="order-card-actions" style="margin-top: 10px;">
         <button type="button" class="btn-edit-order" onclick="bukaEditPesanan(${index})">Edit</button>
         <button type="button" class="btn-delete-order" onclick="hapusPesanan(${index})">Hapus</button>
       </div>
@@ -122,7 +248,6 @@ daftarPesananContainer.innerHTML = daftarPesanan.map((order, index) => `
   `).join('');
 }
 
-// ✅ TAMBAHAN BARU 1: Fungsi Hapus Pesanan
 window.hapusPesanan = function(index) {
   const pesanan = daftarPesanan[index];
   if (confirm(`Yakin ingin menghapus pesanan untuk Meja No. ${pesanan.meja}?`)) {
@@ -131,54 +256,53 @@ window.hapusPesanan = function(index) {
   }
 };
 
-// ✅ TAMBAHAN BARU 2: Fungsi Memanggil Modal Edit saat tombol "Edit" diklik
+function renderStaffEditItems() {
+  if (!staffEditItemsList) return;
+  staffEditItemsList.innerHTML = '';
+  let total = 0;
+
+  if (currentEditItems.length === 0) {
+    staffEditItemsList.innerHTML = '<li style="padding: 8px; color: #e0d5d5; font-size: 0.85rem; text-align: center;">Belum ada item.</li>';
+  }
+
+  currentEditItems.forEach((item, idx) => {
+    total += item.harga;
+    const li = document.createElement('li');
+    li.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.85rem;';
+    li.innerHTML = `
+      <span>${idx + 1}. ${item.nama} (${item.harga}K)</span>
+      <button type="button" onclick="hapusItemEdit(${idx})" style="background: #b81d1d; color: white; padding: 2px 8px; font-size: 12px; margin-top: 0;">x</button>
+    `;
+    staffEditItemsList.appendChild(li);
+  });
+
+  editTotalPriceEl.textContent = total + 'K';
+}
+
+window.hapusItemEdit = function(idx) {
+  currentEditItems.splice(idx, 1);
+  renderStaffEditItems();
+};
+
 window.bukaEditPesanan = function(index) {
   const pesanan = daftarPesanan[index];
   editOrderIndexInput.value = index;
   editTableInput.value = pesanan.meja;
   editPaymentSelect.value = pesanan.metode;
 
-  if (editMenuList) {
-    editMenuList.innerHTML = '';
-    checkboxes.forEach(box => {
-      const name = box.closest('.menu-item').querySelector('.item-name').textContent.trim();
-      const price = parseInt(box.getAttribute('data-price'), 10);
-      const isChecked = pesanan.items.includes(name) ? 'checked' : '';
+  currentEditItems = pesanan.items.map(namaItem => {
+    const found = MASTER_MENU.find(m => m.nama === namaItem);
+    return {
+      nama: namaItem,
+      harga: found ? found.harga : 0
+    };
+  });
 
-      const label = document.createElement('label');
-      label.className = 'edit-menu-item';
-      label.innerHTML = `
-        <span>
-          <input type="checkbox" class="edit-food-cb" data-name="${name}" data-price="${price}" ${isChecked}>
-          ${name}
-        </span>
-        <span>${price}K</span>
-      `;
-      editMenuList.appendChild(label);
-    });
-
-    hitungTotalEdit();
-    document.querySelectorAll('.edit-food-cb').forEach(cb => {
-      cb.addEventListener('change', hitungTotalEdit);
-    });
-  } else {
-    editTotalPriceEl.textContent = pesanan.total;
-  }
-
-  // Perintah utama memunculkan pop-up edit
+  if (staffMenuPickerPopup) staffMenuPickerPopup.style.display = 'none';
+  renderStaffEditItems();
   editOrderModal.style.display = 'flex';
 };
 
-// ✅ TAMBAHAN BARU 3: Hitung ulang total harga saat checkbox di modal edit diubah
-function hitungTotalEdit() {
-  let total = 0;
-  document.querySelectorAll('.edit-food-cb:checked').forEach(cb => {
-    total += parseInt(cb.getAttribute('data-price'), 10);
-  });
-  editTotalPriceEl.textContent = total + 'K';
-}
-
-// ✅ TAMBAHAN BARU 4: Tombol Batal & Simpan Perubahan di dalam Modal Edit
 if (cancelEditBtn) {
   cancelEditBtn.addEventListener('click', () => {
     editOrderModal.style.display = 'none';
@@ -197,22 +321,28 @@ if (saveEditBtn) {
       return;
     }
 
-    let itemBaru = daftarPesanan[index].items;
-    if (editMenuList) {
-      itemBaru = [];
-      document.querySelectorAll('.edit-food-cb:checked').forEach(cb => {
-        itemBaru.push(cb.getAttribute('data-name'));
-      });
+    const n = Number(mejaBaru);
+    if (n < 1 || n > 50 || !Number.isInteger(n)) {
+      alert("Hanya menerima bilangan bulat 1-50 sebagai nomor meja.");
+      editTableInput.focus();
+      return;
+    }
 
-      if (itemBaru.length === 0) {
-        alert('Pilih minimal satu menu pesanan.');
-        return;
-      }
+    const sudahDipakai = daftarPesanan.some((order, i) => i !== index && Number(order.meja) === n);
+    if (sudahDipakai) {
+      alert(`Meja No. ${n} sudah digunakan pesanan lain!`);
+      editTableInput.focus();
+      return;
+    }
+
+    if (currentEditItems.length === 0) {
+      alert('Pesanan harus memiliki minimal satu menu.');
+      return;
     }
 
     daftarPesanan[index] = {
-      meja: mejaBaru,
-      items: itemBaru,
+      meja: String(n),
+      items: currentEditItems.map(item => item.nama),
       total: editTotalPriceEl.textContent,
       metode: metodeBaru
     };
@@ -222,29 +352,24 @@ if (saveEditBtn) {
   });
 }
 
-// 1. Jika klik Pelanggan -> Tutup dialog, sembunyikan tombol pegawai
+// --- EVENT LISTENER PERAN & NAVIGASI ---
 btnPelanggan.addEventListener('click', () => {
   staffNav.style.display = 'none';
   roleModal.style.display = 'none';
 });
 
-// 2. Jika klik Pegawai -> Langsung masuk & tampilkan tombol pojok kiri atas
 btnPegawai.addEventListener('click', () => {
   staffNav.style.display = 'flex';
   roleModal.style.display = 'none';
 });
 
-// Tombol untuk membuka kembali dialog peran
 navGantiPeran.addEventListener('click', () => {
-  // Kembalikan ke tampilan menu utama terlebih dahulu
   menuSection.style.display = 'flex';
   orderBar.style.display = 'flex';
   if (pesananView) pesananView.style.display = 'none';
-  
   roleModal.style.display = 'flex';
 });
 
-// Navigasi Pegawai: Klik "Menu Utama"
 navMenuUtama.addEventListener('click', () => {
   navMenuUtama.classList.add('active');
   navPesanan.classList.remove('active');
@@ -253,7 +378,6 @@ navMenuUtama.addEventListener('click', () => {
   if (pesananView) pesananView.style.display = 'none';
 });
 
-// Navigasi Pegawai: Klik "Pesanan"
 navPesanan.addEventListener('click', () => {
   navPesanan.classList.add('active');
   navMenuUtama.classList.remove('active');
@@ -265,13 +389,14 @@ navPesanan.addEventListener('click', () => {
   }
 });
 
+// --- LOGIKA CHECKOUT & ORDER BAR ---
 function updateOrder() {
   let total = 0;
   let count = 0;
 
   checkboxes.forEach(box => {
     if (box.checked) {
-      total += parseInt(box.getAttribute('data-price'));
+      total += parseInt(box.getAttribute('data-price'), 10);
       count++;
     }
   });
@@ -281,49 +406,30 @@ function updateOrder() {
 }
 
 orderBtn.addEventListener('click', () => {
-  modalOrderList.innerHTML = '';
-  let count = 0;
+  currentModalItems = [];
 
   checkboxes.forEach(box => {
     if (box.checked) {
-      const menuItem = box.closest('.menu-item');
-      const name = menuItem.querySelector('.item-name').textContent.trim();
-      const price = menuItem.querySelector('.item-price').textContent.trim();
-      
-      const li = document.createElement('li');
-      li.innerHTML = `<span>${name}</span><span>${price}</span>`;
-      modalOrderList.appendChild(li);
-      count++;
+      const name = box.getAttribute('data-name');
+      const price = parseInt(box.getAttribute('data-price'), 10);
+      currentModalItems.push({ nama: name, harga: price });
     }
   });
 
-  if (count === 0) {
+  if (currentModalItems.length === 0) {
     alert('Please select at least one item from the menu first.');
     return;
   }
 
-  modalTotalPrice.textContent = totalPriceEl.textContent;
+  if (menuPickerPopup) menuPickerPopup.style.display = 'none';
+  renderModalItems();
   modal.style.display = 'flex';
 });
 
-// Update payment instructions ktk payment method ubh
-paymentSelect.addEventListener('change', () => {
-  const method = paymentSelect.value;
-  if (method === 'Cashier') {
-    paymentInstruction.textContent = 'Please proceed to the front cashier counter with your table number to complete payment.';
-  } else if (method === 'QRIS') {
-    paymentInstruction.textContent = 'Scan the QRIS code at your table or at the cashier counter, then show the receipt to our staff.';
-  } else if (method === 'E-Wallet') {
-    paymentInstruction.textContent = 'Transfer via GoPay / OVO / DANA at the cashier counter and mention your table number.';
-  }
-});
-
-// Close modal on Cancel
 cancelModalBtn.addEventListener('click', () => {
   modal.style.display = 'none';
 });
 
-// Confirm Order
 confirmOrderBtn.addEventListener('click', () => {
   const tableNumber = tableInput.value.trim();
   if (!tableNumber) {
@@ -339,40 +445,40 @@ confirmOrderBtn.addEventListener('click', () => {
     return;
   }
 
-    const itemTerpilih = [];
-  checkboxes.forEach(box => {
-    if (box.checked) {
-      const name = box.closest('.menu-item').querySelector('.item-name').textContent.trim();
-      itemTerpilih.push(name);
-    }
-  });
+  const sudahDipakai = daftarPesanan.some(order => Number(order.meja) === n);
+  if (sudahDipakai) {
+    alert(`Meja No. ${n} sudah terisi! Silakan pilih nomor meja lain.`);
+    tableInput.focus();
+    return;
+  }
+
+  if (currentModalItems.length === 0) {
+    alert('Pesanan tidak boleh kosong.');
+    return;
+  }
+
+  const itemTerpilih = currentModalItems.map(item => item.nama);
 
   daftarPesanan.push({
-    meja: tableNumber,
+    meja: String(n),
     items: itemTerpilih,
     total: modalTotalPrice.textContent,
     metode: paymentSelect.value
   });
   orderBadge.textContent = daftarPesanan.length;
 
-
   alert(
-    `Thank you ^^! Orderan Anda di Meja No. ${tableNumber} telah diterima.\n` +
+    `Thank you ^^! Orderan Anda di Meja No. ${n} telah diterima.\n` +
     `Total: ${modalTotalPrice.textContent} (${paymentSelect.value})\n\n` +
     `!Jangan lupa untuk membayar pesanan Anda di Kasir dulu!`
   );
 
-  // Reset form and close modal
   modal.style.display = 'none';
   tableInput.value = '';
   checkboxes.forEach(box => (box.checked = false));
   updateOrder();
 });
 
-
-
 checkboxes.forEach(box => {
   box.addEventListener('change', updateOrder);
 });
-
-
